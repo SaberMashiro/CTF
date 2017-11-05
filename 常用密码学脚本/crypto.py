@@ -5,7 +5,8 @@ import HTMLParser
 import cgi
 import string
 import re
-import getopt
+import argparse
+import sys
 
 def hex2str(s):# 68656c6c6f  => hello
     print binascii.unhexlify(s)
@@ -37,7 +38,7 @@ def decodeZhalan(s):
         d = ''
         for i in range(b):
             d = d + result[i]
-        print '分为\t'+str(f)+'\t'+'栏时，解密结果为：  '+d
+        print u'分为\t'+str(f)+'\t'+'栏时，解密结果为：  '+d
 
 def Kaisa(s):
     table = string.maketrans(string.ascii_lowercase + string.ascii_uppercase,\
@@ -47,9 +48,7 @@ def Kaisa(s):
         s = s.translate(table)
         print str(i)+"--"+s
 
-def usage():
-    #提示信息
-    print '''
+Usuage=u'''
     -h --help                     print the help
     -s --h2s                      68656c6c6f  => hello
     -S --h02s                     0x680x650x6c0x6c0x6f => hello
@@ -60,30 +59,34 @@ def usage():
 
     '''
 if __name__ == '__main__':
-    try:
-        opts,args = getopt.getopt(sys.argv[1:],"hc::",["help","h2s=","h02s=",\
-            "decode_html=","encode_html=","zhalan=","kaisa="])
-    except getopt.GetoptError as err:
-        print str(err)
-        usage()
-    for o,a in opts:
-        if o in ("-h","--help"):
-            usage()
-        elif o in ("-s","--h2s"):
-            hex2str(a)
-        elif o in ("-S","--h02s"):
-            hex0x2str(a)
-        elif o in ("-d","--decode_html"):
-            decode_html(a)
-        elif o in ("-e","--encode_html"):
-            encode_html(a)
-        elif o in ("-z","--zhalan"):
-            decodeZhalan(a)
-        elif o in ("-K","--kaisa"):
-            Kaisa(a)
+    parser = argparse.ArgumentParser(Usuage)
+    parser_group = parser.add_argument_group('a')
+    parser_group.add_argument("-s","--h2s",dest="h2s")
+    parser_group.add_argument("-S","--h02s",dest="h02s")
+    parser_group.add_argument("-d","--decode_html",dest="decode_html")
+    parser_group.add_argument("-e","--encode_html",dest="encode_html")
+    parser_group.add_argument("-z","--zhalan",dest="zhalan")
+    parser_group.add_argument("-K","--kaisa",dest="kaisa")
 
-        else:
-            assert False,"Unhandled Option"
+    args,opt = parser.parse_known_args()
+    #print args.__dict__
+        #print Usage
+    #print opt
+    try:
+        if args.h2s:
+            hex2str(args.h2s)
+        elif args.h02s:
+            hex0x2str(args.h02s)
+        elif args.deocde_html:
+            decode_html(args.decode_html)
+        elif args.encode_html:
+            encode_html(args.encode_html)
+        elif args.zhalan:
+            decodeZhalan(args.zhalan)
+        elif args.kaisa:
+            Kaisa(args.kaisa)
+    except:
+        print "Unhandled Option"
 
 
 
