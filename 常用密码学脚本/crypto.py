@@ -86,7 +86,7 @@ if __name__ == '__main__':
         elif args.kaisa:
             Kaisa(args.kaisa)
     except:
-        print "Unhandled Option"
+        print "Unhandled Option Please use -h"
 
 
 
